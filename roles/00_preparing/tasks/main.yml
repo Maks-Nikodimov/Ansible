@@ -1,0 +1,7 @@
+---
+# tasks file for 00_preparing
+# Get OS version of target server
+
+- name: Check OS version of target server
+  debug:
+    var: ansible_distribution

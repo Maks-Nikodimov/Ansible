@@ -1,0 +1,8 @@
+---
+# handlers file for postgresql-server
+
+- name: Restart postgresql
+  listen: Restart_postgresql
+  systemd:
+      name: postgresql
+      state: restarted

@@ -1,0 +1,37 @@
+---
+# tasks file for postgresql-server
+- name: "Install PostgreSQL {{ pg_version }} base package"
+  apt:
+    package: ['postgresql-{{ pg_version }}']
+    state: latest
+    update_cache: yes
+    cache_valid_time: 3600
+  with_items:
+    - "postgresql-{{ pg_version }}"
+    - "{{ postgresql_data_dir }}"
+
+- name: creating postgresql directory
+  file:
+    path: "{{ postgresql_data_dir }}"
+    owner: postgres
+    group: postgres
+    state: directory
+
+- name: Edit index.html
+  template:
+    src: postgresql.j2
+    dest: /etc/postgresql/{{ pg_version }}/main/postgresql.conf
+  notify:
+    - Restart_ postgresql
+
+- name: Check if PostgreSQL database is initialized.
+  stat:
+    path: "{{ postgresql_data_dir }}/PG_VERSION"
+  register: pgdata_dir_version
+
+- name: Ensure PostgreSQL database is initialized.
+  command: "/usr/lib/postgresql/{{ pg_version }}/bin/initdb -D {{ postgresql_data_dir }}"
+  when: not pgdata_dir_version.stat.exists
+  become: yes
+  become_method: sudo
+  become_user: postgres

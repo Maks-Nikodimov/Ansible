@@ -1,0 +1,14 @@
+[database]
+#host1 http_port=80 maxRequestsPerChild=808
+10.128.0.27
+
+[database:vars]
+pg_version=12
+postgresql_data_dir=/tmp/postgresql
+
+[web]
+10.128.0.27
+
+[app]
+10.128.0.15
+10.128.0.13
